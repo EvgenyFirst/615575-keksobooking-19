@@ -104,12 +104,10 @@ var mixObjects = function (objects) {
 var mixPinsObjects = mixObjects(pinsObjects);
 
 var mixObjectsElement = function (object) {
-
   return Math.floor(Math.random() * object.length);
 };
 
 var mixIntegerInRange = function (min, max) {
-
   return Math.floor(min + Math.random() * (max - min + 1));
 };
 
@@ -198,4 +196,56 @@ var fragment = document.createDocumentFragment();
 objectsList = makeOffer(PINS_RANDOM_OBJECTS);
 objectsList.forEach(function (pin) {
   fragment.appendChild(renderPin(pin));
+});
+
+var mapFilters = document.querySelector('.map__filters');
+mapFilters.querySelectorAll('select').forEach(function (setAttr) {
+  setAttr.setAttribute('disabled', 'disabled');
+});
+
+mapFilters.querySelectorAll('fieldset').forEach(function (setAttr) {
+  setAttr.setAttribute('disabled', 'disabled');
+});
+
+adForm.querySelectorAll('fieldset').forEach(function (setAttr) {
+  setAttr.setAttribute('disabled', 'disabled');
+});
+
+
+// Валидация формы
+
+// Соответствие количества комнат и гостей
+var roomNumber = adForm.querySelector('#room_number');
+var capacity = adForm.querySelector('#capacity');
+
+var checkGuestHousing = function (select) {
+  var currentRoomNumber = parseInt(roomNumber.value, 10);
+  var currentCapacity = parseInt(capacity.value, 10);
+  roomNumber.setCustomValidity('');
+  capacity.setCustomValidity('');
+  if ((currentRoomNumber === 100) && (currentCapacity !== 0)) {
+    select.setCustomValidity('Не для гостей');
+  } else if ((currentRoomNumber !== 100) && (currentCapacity === 0)) {
+    select.setCustomValidity('Минимум 1 гость');
+  } else if ((currentCapacity > 0) && (currentRoomNumber < currentCapacity)) {
+    select.setCustomValidity(currentRoomNumber + ' комната(ы) для ' + currentRoomNumber + ' гостя(ей)');
+  } else {
+    roomNumber.setCustomValidity('');
+    capacity.setCustomValidity('');
+  }
+};
+checkGuestHousing(roomNumber);
+roomNumber.addEventListener('change', function () {
+  checkGuestHousing(roomNumber);
+});
+capacity.addEventListener('change', function () {
+  checkGuestHousing(capacity);
+});
+
+// Нажатие на Enter
+
+document.addEventListener('keydown', function (evt) {
+  if (evt.key === 'Enter') {
+    setStateActive();
+  }
 });
