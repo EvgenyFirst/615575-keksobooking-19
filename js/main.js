@@ -249,4 +249,3 @@ document.addEventListener('keydown', function (evt) {
     setStateActive();
   }
 });
-
